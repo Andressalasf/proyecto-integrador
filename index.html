@@ -1,0 +1,172 @@
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin: 10px 0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #0078d4;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #005a9e;
+        }
+    </style>
+   
+</head>
+<body>
+    <div class="container">
+        <h1>Formulario de registro de usuario</h1>
+        <form id="register-form" onsubmit="return registerUser(event)">
+            <div class="form-group">
+                <label for="name">Nombre</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="surname">Apellido</label>
+                <input type="text" id="surname" name="surname" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Correo</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Número telefónico</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Registrarse" class="button">
+            </div>
+            <div id="message"></div>
+        </form>
+    </div>
+    <script>
+        // A function to register a user and store their data in the local storage
+        function registerUser(event) {
+            // Prevent the default form submission
+            event.preventDefault();
+            // Get the form element
+            var form = document.getElementById("register-form");
+            // Get the message element
+            var message = document.getElementById("message");
+            // Get the form data as an object
+            var data = {
+                name: form.name.value,
+                surname: form.surname.value,
+                email: form.email.value,
+                phone: form.phone.value,
+                password: form.password.value
+            };
+            // Validate the email and password
+            if (validateEmail(data.email) && validatePassword(data.password)) {
+                // Store the data in the local storage
+                localStorage.setItem("user", JSON.stringify(data));
+                // Clear the form fields
+                form.reset();
+                // Display a success message
+                message.innerHTML = "<p class='success'>Registro exitoso. Por favor, inicia sesión <a href='login.html'>aquí</a>.</p>";
+            } else {
+                // Display an error message
+                message.innerHTML = "<p class='error'>Correo o contraseña inválidos. Por favor, inténtalo de nuevo.</p>";
+            }
+        }
+
+        // A function to validate an email using a regular expression
+        function validateEmail(email) {
+            // Define a regular expression for a valid email
+            var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            // Return true if the email matches the regex, false otherwise
+            return regex.test(email);
+        }
+
+        // A function to validate a password using some rules
+        function validatePassword(password) {
+            // Define the rules for a valid password
+            var minLength = 8; // The minimum length of the password
+            var minDigits = 2; // The minimum number of digits in the password
+            var minUpper = 1; // The minimum number of uppercase letters in the password
+            var minLower = 1; // The minimum number of lowercase letters in the password
+            var minSpecial = 1; // The minimum number of special characters in the password
+            // Define the special characters
+            var specialChars = "!@#$%^&*()_+-=[]{};:'\"\\|,.<>/?";
+            // Initialize the counters for each rule
+            var digits = 0;
+            var upper = 0;
+            var lower = 0;
+            var special = 0;
+            // Loop through each character of the password
+            for (var i = 0; i < password.length; i++) {
+                var char = password.charAt(i);
+                // Check if the character is a digit
+                if (char >= "0" && char <= "9") {
+                    digits++;
+                }
+                // Check if the character is an uppercase letter
+                else if (char >= "A" && char <= "Z") {
+                    upper++;
+                }
+                // Check if the character is a lowercase letter
+                else if (char >= "a" && char <= "z") {
+                    lower++;
+                }
+                // Check if the character is a special character
+                else if (specialChars.indexOf(char) != -1) {
+                    special++;
+                }
+            }
+            // Return true if all the rules are met, false otherwise
+            return password.length >= minLength && digits >= minDigits && upper >= minUpper && lower >= minLower && special >= minSpecial;
+        }
+    </script>
+</html>
